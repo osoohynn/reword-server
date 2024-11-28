@@ -28,10 +28,14 @@ public class ChatGPTServiceImpl implements ChatGPTService {
 
     @Override
     public String prompt(String userMessage) {
-        log.debug("[+] 신규 프롬프트를 수행합니다.");
-        System.out.println(chatHistoryService.getChatHistory());
+        String processedMessage;
+        if (chatHistoryService.getChatHistory().isEmpty()) {
+            processedMessage = "'" + userMessage + "' 를 번역해줘";
+        } else {
+            processedMessage = "좀만 다르게 번역해줘";
+        }
 
-        chatHistoryService.addMessage("user", userMessage);
+        chatHistoryService.addMessage("user", processedMessage);
 
         List<Map<String, String>> messages = chatHistoryService.getChatHistory();
         Map<String, Object> requestBody = Map.of(
@@ -59,11 +63,9 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                     .map(message -> (String) message.get("content"))
                     .orElse("No response from assistant.");
 
-            System.out.println("Assistant response: " + assistantMessage);
             chatHistoryService.addMessage("assistant", assistantMessage);
             return assistantMessage;
         } catch (Exception e) {
-            System.err.println("Error processing assistant response: " + e.getMessage());
             return "An error occurred while processing the response.";
         }
     }
