@@ -1,3 +1,10 @@
+openai:
+  model: gpt-3.5-turbo
+  api:
+    key: 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
+    url: "https://api.openai.com/v1/chat/completions"
+
+
 spring:
   ai:
     openai:
