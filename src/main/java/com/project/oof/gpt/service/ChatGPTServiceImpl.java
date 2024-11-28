@@ -19,7 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatGPTServiceImpl implements ChatGPTService {
 
-
     private final ChatGPTConfig chatGPTConfig;
     private final ChatHistoryService chatHistoryService;
 
@@ -30,6 +29,8 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     @Override
     public String prompt(String userMessage) {
         log.debug("[+] 신규 프롬프트를 수행합니다.");
+        System.out.println(chatHistoryService.getChatHistory());
+
         chatHistoryService.addMessage("user", userMessage);
 
         List<Map<String, String>> messages = chatHistoryService.getChatHistory();
@@ -49,18 +50,22 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                 .exchange(promptUrl, HttpMethod.POST, requestEntity, Map.class);
 
         // OpenAI API의 응답을 처리
-        Map<String, Object> responseBody = response.getBody();
+        try {
+            Map<String, Object> responseBody = response.getBody();
+            String assistantMessage = ((List<Map<String, Object>>) responseBody.get("choices"))
+                    .stream()
+                    .findFirst()
+                    .map(choice -> (Map<String, Object>) choice.get("message"))
+                    .map(message -> (String) message.get("content"))
+                    .orElse("No response from assistant.");
 
-        List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
-
-        Map<String, Object> firstChoice = choices.get(0);
-        Map<String, Object> message = (Map<String, Object>) firstChoice.get("message");
-
-        String assistantMessage = message.get("content").toString();
-
-        System.out.println("Assistant response: " + assistantMessage);
-        chatHistoryService.addMessage("assistant", assistantMessage);
-        return assistantMessage;
+            System.out.println("Assistant response: " + assistantMessage);
+            chatHistoryService.addMessage("assistant", assistantMessage);
+            return assistantMessage;
+        } catch (Exception e) {
+            System.err.println("Error processing assistant response: " + e.getMessage());
+            return "An error occurred while processing the response.";
+        }
     }
 
 }
