@@ -1,4 +1,4 @@
-package com.project.oof.config;
+package com.project.oof.gpt.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
