@@ -16,11 +16,14 @@ public class ChatHistoryService {
     }
 
     public List<Map<String, String>> getChatHistory() {
-        return new ArrayList<>(chatHistory); // 복사본 반환
+        return new ArrayList<>(chatHistory);
     }
 
-    // 대화 기록 초기화 (옵션)
     public void clearChatHistory() {
         chatHistory.clear();
+        answerHistory.clear();
     }
+
+    public List<String> answerHistory = new ArrayList<>();
+
 }

@@ -1,6 +1,7 @@
 package com.project.oof.gpt.service;
 
 import com.project.oof.gpt.config.ChatGPTConfig;
+import com.project.oof.gpt.dto.MessageDto;
 import com.project.oof.storage.service.ChatHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +28,10 @@ public class ChatGPTServiceImpl implements ChatGPTService {
 
 
     @Override
-    public String translateMessage(String userMessage) {
+    public MessageDto translateMessage(String userMessage) {
         chatHistoryService.clearChatHistory();
 
-        String processedMessage = "'" + userMessage + "' 를 번역해줘";
-//        if (!chatHistoryService.getChatHistory().isEmpty()) {
-//            throw new RuntimeException("");
-//        }
+        String processedMessage = "'" + userMessage + "' 를 번역해줘, 다른 말 없이 결과만 말해줘";
 
         chatHistoryService.addMessage("user", processedMessage);
 
@@ -41,7 +39,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     }
 
     @Override
-    public String refreshResult() {
+    public MessageDto refreshResult() {
         if (chatHistoryService.getChatHistory().isEmpty()) {
             throw new RuntimeException("입력된 데이터가 없습니다");
         }
@@ -51,7 +49,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
         return getAnswer();
     }
 
-    private String getAnswer() {
+    private MessageDto getAnswer() {
         List<Map<String, String>> messages = chatHistoryService.getChatHistory();
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-3.5-turbo",
@@ -75,9 +73,15 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                     .orElse("No response from assistant.");
 
             chatHistoryService.addMessage("assistant", assistantMessage);
-            return assistantMessage;
+            chatHistoryService.answerHistory.add(assistantMessage);
+            return MessageDto.of(assistantMessage);
         } catch (Exception e) {
-            return "An error occurred while processing the response.";
+            return MessageDto.of("An error occurred while processing the response.");
         }
+    }
+
+    @Override
+    public List<String> getAnswers() {
+        return chatHistoryService.answerHistory;
     }
 }

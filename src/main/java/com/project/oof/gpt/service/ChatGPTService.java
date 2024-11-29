@@ -1,12 +1,17 @@
 package com.project.oof.gpt.service;
 
+import com.project.oof.gpt.dto.MessageDto;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
 public interface ChatGPTService {
 
-    String translateMessage(String userMessage);
+    MessageDto translateMessage(String userMessage);
 
-    String refreshResult();
+    MessageDto refreshResult();
+
+    List<String> getAnswers();
 }
