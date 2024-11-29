@@ -1,4 +1,4 @@
-package com.project.oof.gpt.dto;
+package com.project.oof.gpt.dto.response;
 
 public record MessageDto (
         String message

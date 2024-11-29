@@ -1,8 +1,9 @@
 package com.project.oof.gpt.controller;
 
-import com.project.oof.gpt.dto.MessageDto;
+import com.project.oof.gpt.dto.request.RefreshRequest;
+import com.project.oof.gpt.dto.request.TranslateRequest;
+import com.project.oof.gpt.dto.response.MessageDto;
 import com.project.oof.gpt.service.ChatGPTService;
-import com.project.oof.storage.service.ChatHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Slf4j
@@ -25,14 +27,14 @@ public class ChatGPTController {
     private final ChatGPTService chatGPTService;
 
     @PostMapping("/translate")
-    public ResponseEntity<MessageDto> selectPrompt(@RequestBody MessageDto request) {
-        MessageDto result = chatGPTService.translateMessage(request.message());
+    public ResponseEntity<MessageDto> selectPrompt(@RequestBody TranslateRequest request) {
+        MessageDto result = chatGPTService.translateMessage(request);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<MessageDto> refresh() {
-        MessageDto result = chatGPTService.refreshResult();
+    public ResponseEntity<MessageDto> refresh(@RequestBody RefreshRequest request) {
+        MessageDto result = chatGPTService.refreshResult(request.userId());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
