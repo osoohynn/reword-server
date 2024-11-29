@@ -64,16 +64,19 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                 .exchange(promptUrl, HttpMethod.POST, requestEntity, Map.class);
 
         try {
-            Map<String, Object> responseBody = response.getBody();
-            String assistantMessage = ((List<Map<String, Object>>) responseBody.get("choices"))
+            String assistantMessage = ((List<Map<String, Object>>) response.getBody().get("choices"))
                     .stream()
                     .findFirst()
                     .map(choice -> (Map<String, Object>) choice.get("message"))
                     .map(message -> (String) message.get("content"))
+                    .map(content -> content.replaceAll("^\"|\"$", "")) // 문자열 양쪽의 따옴표 제거
                     .orElse("No response from assistant.");
 
+            // 대화 기록 저장
             chatHistoryService.addMessage("assistant", assistantMessage);
             chatHistoryService.answerHistory.add(assistantMessage);
+
+            // 메시지 DTO 반환
             return MessageDto.of(assistantMessage);
         } catch (Exception e) {
             return MessageDto.of("An error occurred while processing the response.");
