@@ -23,7 +23,6 @@ import java.util.UUID;
 public class ChatGPTServiceImpl implements ChatGPTService {
 
     private final ChatGPTConfig chatGPTConfig;
-    private final ChatHistoryService chatHistoryService;
     private final UserService userService;
 
     @Value("${openai.url.prompt}")

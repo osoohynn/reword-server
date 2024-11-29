@@ -11,7 +11,7 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    @GetMapping("create")
+    @GetMapping()
     public UUID getUserId() {
         return UUID.randomUUID();
     }
