@@ -1,4 +1,4 @@
-package com.project.oof.storage.service;
+package com.project.oof.gpt.service;
 
 import org.springframework.stereotype.Service;
 
@@ -25,5 +25,4 @@ public class ChatHistoryService {
     }
 
     public List<String> answerHistory = new ArrayList<>();
-
 }

@@ -15,5 +15,5 @@ public interface ChatGPTService {
 
     MessageDto refreshResult(UUID userId);
 
-    List<String> getAnswers();
+    List<String> getAnswers(UUID userId);
 }

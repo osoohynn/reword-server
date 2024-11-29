@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 
 @Slf4j
@@ -39,7 +38,7 @@ public class ChatGPTController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<String>> getAnswers() {
-        return new ResponseEntity<>(chatGPTService.getAnswers(), HttpStatus.OK);
+    public ResponseEntity<List<String>> getAnswers(@RequestBody RefreshRequest request) {
+        return new ResponseEntity<>(chatGPTService.getAnswers(request.userId()), HttpStatus.OK);
     }
 }
