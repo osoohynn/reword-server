@@ -21,9 +21,15 @@ public class ChatGPTController {
 
     private final ChatGPTService chatGPTService;
 
-    @PostMapping("/prompt")
+    @PostMapping("/translate")
     public ResponseEntity<String> selectPrompt(@RequestBody String message) {
-        String result = chatGPTService.prompt(message);
+        String result = chatGPTService.translateMessage(message);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh() {
+        String result = chatGPTService.refreshResult();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

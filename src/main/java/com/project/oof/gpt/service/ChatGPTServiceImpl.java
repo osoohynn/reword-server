@@ -27,33 +27,44 @@ public class ChatGPTServiceImpl implements ChatGPTService {
 
 
     @Override
-    public String prompt(String userMessage) {
-        String processedMessage;
-        if (chatHistoryService.getChatHistory().isEmpty()) {
-            processedMessage = "'" + userMessage + "' 를 번역해줘";
-        } else {
-            processedMessage = "좀만 다르게 번역해줘";
-        }
+    public String translateMessage(String userMessage) {
+        chatHistoryService.clearChatHistory();
+
+        String processedMessage = "'" + userMessage + "' 를 번역해줘";
+//        if (!chatHistoryService.getChatHistory().isEmpty()) {
+//            throw new RuntimeException("");
+//        }
 
         chatHistoryService.addMessage("user", processedMessage);
 
+        return getAnswer();
+    }
+
+    @Override
+    public String refreshResult() {
+        if (chatHistoryService.getChatHistory().isEmpty()) {
+            throw new RuntimeException("입력된 데이터가 없습니다");
+        }
+
+        chatHistoryService.addMessage("user", "좀만 다르게 번역해줘");
+
+        return getAnswer();
+    }
+
+    private String getAnswer() {
         List<Map<String, String>> messages = chatHistoryService.getChatHistory();
         Map<String, Object> requestBody = Map.of(
                 "model", "gpt-3.5-turbo",
                 "messages", messages
         );
 
-        // [STEP1] 토큰 정보가 포함된 Header를 가져옵니다.
         HttpHeaders headers = chatGPTConfig.httpHeaders();
 
-
-        // [STEP5] 통신을 위한 RestTemplate을 구성합니다.
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<Map> response = chatGPTConfig
                 .restTemplate()
                 .exchange(promptUrl, HttpMethod.POST, requestEntity, Map.class);
 
-        // OpenAI API의 응답을 처리
         try {
             Map<String, Object> responseBody = response.getBody();
             String assistantMessage = ((List<Map<String, Object>>) responseBody.get("choices"))
@@ -69,5 +80,4 @@ public class ChatGPTServiceImpl implements ChatGPTService {
             return "An error occurred while processing the response.";
         }
     }
-
 }

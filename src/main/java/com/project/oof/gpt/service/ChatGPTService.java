@@ -6,5 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ChatGPTService {
 
-    String prompt(String userMessage);
+    String translateMessage(String userMessage);
+
+    String refreshResult();
 }
