@@ -3,7 +3,6 @@ package com.project.oof.gpt.service;
 import com.project.oof.gpt.config.ChatGPTConfig;
 import com.project.oof.gpt.dto.request.TranslateRequest;
 import com.project.oof.gpt.dto.response.MessageDto;
-import com.project.oof.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +37,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
         personalPromptList.clearChatHistory();
 
         String userMessage = request.message();
-        String processedMessage = "'" + userMessage + "'를 번역해줘, 다른 말 없이 결과만 말해줘";
+        String processedMessage = "'" + userMessage + "'를 번역해줘, 절대로 다른 말 하지말고 번역 결과만 말해줘. 한국어면 영어로, 영어면 한국어로 해 따옴표도 붙히지 말아줘";
 
         personalPromptList.addMessage("user", processedMessage);
 
@@ -53,7 +52,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
             throw new RuntimeException("입력된 데이터가 없습니다");
         }
 
-        personalPromptList.addMessage("user", "좀만 다르게 번역해줘, 역시나 다른 말 빼고 결과만");
+        personalPromptList.addMessage("user", "좀만 다르게 번역해줘, 역시나 절대로 다른 말 빼고 번역 결과만. 한국어면 영어로, 영어면 한국어로 해 따옴표도 붙히지 말아줘");
 
         return getAnswer(personalPromptList);
     }
@@ -63,7 +62,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
         List<Map<String, String>> messages = personalPromptList.getChatHistory();
 
         Map<String, Object> requestBody = Map.of(
-                "model", "gpt-3.5-turbo",
+                "model", "gpt-4o-mini",
                 "messages", messages
         );
 
