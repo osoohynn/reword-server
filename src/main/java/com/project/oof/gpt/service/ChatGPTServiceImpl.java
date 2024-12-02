@@ -37,7 +37,11 @@ public class ChatGPTServiceImpl implements ChatGPTService {
         personalPromptList.clearChatHistory();
 
         String userMessage = request.message();
-        String processedMessage = "'" + userMessage + "'를 번역해줘, 절대로 다른 말 하지말고 번역 결과만 말해줘. 한국어면 영어로, 영어면 한국어로 해 따옴표도 붙히지 말아줘";
+        String processedMessage = "'" + userMessage + "'를 번역해줘" +
+                "1. 절대로 다른 말 하지말고 번역기처럼 번역 결과만 말해줘. " +
+                "2. 한국어면 영어로, 영어면 한국어로 해 " +
+                "3. 따옴표도 붙히지 말아줘" +
+                "4. 만약 한국어나 영어 외에 다른 언어가 들어오면 한국어로 번역해줘";
 
         personalPromptList.addMessage("user", processedMessage);
 
@@ -52,7 +56,9 @@ public class ChatGPTServiceImpl implements ChatGPTService {
             throw new RuntimeException("입력된 데이터가 없습니다");
         }
 
-        personalPromptList.addMessage("user", "좀만 다르게 번역해줘, 역시나 절대로 다른 말 빼고 번역 결과만. 한국어면 영어로, 영어면 한국어로 해 따옴표도 붙히지 말아줘");
+        personalPromptList.addMessage("user", "좀만 다르게 번역해줘, " +
+                "1. 역시나 절대로 다른 말 빼고 번역 결과만. " +
+                "2. 따옴표도 붙히지 말아줘");
 
         return getAnswer(personalPromptList);
     }

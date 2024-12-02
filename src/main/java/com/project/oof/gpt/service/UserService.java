@@ -1,6 +1,5 @@
-package com.project.oof.user.service;
+package com.project.oof.gpt.service;
 
-import com.project.oof.gpt.service.ChatHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,11 @@ public class UserService {
     }
 
     public void addUser(UUID userId) {
+//        removeUser();
         userChatHistories.putIfAbsent(userId, new ChatHistoryService());
     }
 
+    public void removeUser() {
+        userChatHistories.clear();
+    }
 }
