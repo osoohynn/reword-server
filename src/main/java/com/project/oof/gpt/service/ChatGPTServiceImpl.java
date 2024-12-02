@@ -11,6 +11,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 import java.util.Map;
@@ -93,9 +95,17 @@ public class ChatGPTServiceImpl implements ChatGPTService {
 
             return MessageDto.of(assistantMessage);
 
+        } catch (HttpClientErrorException e) {
+            log.error("HTTP Client Error: Status - {}, Body - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RuntimeException("API 호출 실패: " + e.getMessage());
+        } catch (HttpServerErrorException e) {
+            log.error("HTTP Server Error: Status - {}, Body - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RuntimeException("서버 오류 발생: " + e.getMessage());
         } catch (Exception e) {
-            return MessageDto.of("An error occurred while processing the response.");
+            log.error("Unexpected Error: ", e);
+            throw new RuntimeException("예기치 않은 오류 발생: " + e.getMessage());
         }
+
     }
 
     @Override
