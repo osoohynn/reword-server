@@ -93,6 +93,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
             personalPromptList.addMessage("assistant", assistantMessage);
             personalPromptList.answerHistory.add(assistantMessage);
 
+            System.out.println(personalPromptList.getChatHistory());
             return MessageDto.of(assistantMessage);
 
         } catch (HttpClientErrorException e) {
